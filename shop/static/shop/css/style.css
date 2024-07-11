@@ -1,0 +1,69 @@
+:root {
+    --background-color: black;
+    --font-family: 'Ubuntu';
+    --font-color: white;
+}
+html {
+    background-color: var(--background-color);
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: var(--font-family);
+    color: aliceblue;
+}
+
+header {
+    background-color: blue;
+    width: 100%;
+    color: red;
+    height: 5rem;
+}
+
+.logo{
+    align-self: center;
+    margin : 5px;
+    padding: 5px;
+}
+
+
+.headersbuttons{
+    display: flex;
+    justify-content: flex-end;
+    box-sizing: border-box;
+
+}
+
+.navbutton{
+
+}
+
+#main_banners {
+    background-color: orange;
+    width: 100%;
+    align-content: center;
+    padding: 20px;
+}
+
+#category_list {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.category {
+    background-color: aquamarine;
+    padding: 20px;
+    width: 200px;
+    height: 200px;
+    border: black;
+    margin: 1rem;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    background-color: darkgoldenrod;
+    width: 100%;
+    align-content: center;
+}

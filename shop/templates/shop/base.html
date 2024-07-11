@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twoja Strona</title>
+    <link rel="stylesheet" href="{% static 'shop/css/main.css' %}">
+</head>
+<body>
+    <header>
+        <div class="left-buttons">
+            <button class="dropdown">Kategorie</button>
+            <button class="search">Szukaj</button>
+        </div>
+        <div class="logo">
+            <img src="{% static 'shop/images/logo.avif' %}" alt="Logo">
+        </div>
+        <div class="right-buttons">
+            <button class="language">Zmień język</button>
+            <button class="login">Zaloguj się / Profil</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="carousel">
+            <div class="banner">Banner 1</div>
+            <div class="banner">Banner 2</div>
+            <div class="banner">Banner 3</div>
+        </div>
+
+        <div class="products">
+            <!-- Przykładowe produkty -->
+            <div class="product">
+                <img 
+{#                        src="product1.jpg" alt="Produkt 1"#}
+                >
+                <p>Produkt 1</p>
+            </div>
+            <div class="product">
+                <img
+{#                        src="product2.jpg" alt="Produkt 2"#}
+                >
+                <p>Produkt 2</p>
+            </div>
+            <!-- Dodaj więcej produktów według potrzeby -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+            <a href="#">Link 4</a>
+        </div>
+        <div class="policy-links">
+            <a href="#">Refund Policy</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Information</a>
+        </div>
+    </footer>
+
+    <script src="{% static 'shop/js/script.js' %}">    </script>
+</body>
+</html>

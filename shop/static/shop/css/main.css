@@ -1,0 +1,104 @@
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #222;
+}
+
+header .left-buttons,
+header .right-buttons {
+    display: flex;
+    align-items: center;
+}
+
+header .left-buttons button,
+header .right-buttons button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+header .left-buttons button:hover,
+header .right-buttons button:hover {
+    background-color: #555;
+}
+
+header .logo img {
+    height: 50px;
+}
+
+.carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #111;
+}
+
+.carousel .banner {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    margin: 0 10px;
+    text-align: center;
+    width: 200px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    background-color: #000;
+}
+
+.products .product {
+    margin: 10px;
+    text-align: center;
+}
+
+.products .product img {
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: 0 auto 10px auto;
+}
+
+footer {
+    background-color: #222;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-links,
+.policy-links {
+    margin: 10px 0;
+}
+
+.footer-links a,
+.policy-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-links a:hover,
+.policy-links a:hover {
+    color: #ff0000;
+}
