@@ -75,12 +75,18 @@ WSGI_APPLICATION = 'Ready24.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+try:
+    from .db_config import DATABASES
+except ImportError:
+    DATABASES = {}
+    print("Warning: db_config.py not found or incorrect")
 
 
 # Password validation
