@@ -42,11 +42,11 @@ class Product(models.Model):
 
 
 class Picture(models.Model):
-    filename = models.CharField(max_length=128)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
-        return self.filename
+        return self.image.name
 
 
 class PromoCodes(models.Model):
@@ -69,6 +69,9 @@ class ShoppingCart(models.Model):
     product = models.ManyToManyField(Product, through='ShoppingCartProduct', related_name='shopping_cart_product')
     promo_code = models.ForeignKey(PromoCodes, on_delete=models.SET_NULL, null=True, blank=True)
     active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username} cart with ID {self.id} ({self.active})"
 
 
 class ShoppingCartProduct(models.Model):
