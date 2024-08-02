@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'Ready24.wsgi.application'
 # }
 
 try:
-    from .db_config import DATABASES
+    from db_config import DATABASES
 except ImportError:
     DATABASES = {}
     print("Warning: db_config.py not found or incorrect")

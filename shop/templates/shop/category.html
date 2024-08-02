@@ -1,0 +1,19 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ category.name }} {% endblock %}
+{% block content %}
+    <h1>{{ category.name }}</h1>
+    <p>{{ category.description }}</p>
+    <div class="products">
+    {% for prod in products %}
+        {#        <div class="products product"><img class="product" src="{{ prod.picture_set.first.image.url }}" alt="{{ prod.name }}"> {{ prod.name }} {{ prod.price }}</div>#}
+
+        <div class="product">
+            <img
+                    src="{{ prod.picture_set.first.image.url }}" alt="{{ prod.name }}"
+            >
+            <p>{{ prod.name }}</p>
+            <p>{{ prod.price }} ISK</p>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

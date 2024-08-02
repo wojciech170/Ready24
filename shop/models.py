@@ -1,12 +1,12 @@
 import datetime
+from django.utils.text import slugify
 
 from django.contrib.auth.models import User
 from django.db import models
 
-
 VAT_CHOICES = (
-    ('11', '11'),
-    ('24', '24'),
+    ('0.11', '11%'),
+    ('0.24', '24%'),
 )
 
 
@@ -20,25 +20,40 @@ class Tool(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
+    slug = models.SlugField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
     stock = models.IntegerField(default=0)
     netto_price = models.IntegerField(default=0)
-    vat = models.IntegerField(choices=VAT_CHOICES, default=0)
+    vat = models.CharField(choices=VAT_CHOICES, default=0)
     height = models.IntegerField(default=0)
     length = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     weight = models.IntegerField(default=0)
     tool = models.ManyToManyField(Tool)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+        
+    def price(self):
+        return (self.netto_price * float(self.vat)) + self.netto_price
 
 
 class Picture(models.Model):

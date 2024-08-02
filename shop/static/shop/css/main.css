@@ -6,6 +6,25 @@ body {
     padding: 0;
 }
 
+a {
+    color: #fff;
+    text-decoration: none;
+}
+a:visited {
+    color: slategray; /* Kolor odwiedzonego linku */
+}
+
+/* Kolor linku, gdy najedziesz na niego myszką */
+a:hover {
+    color: darkred; /* Kolor linku podczas najechania myszką */
+}
+
+/* Kolor linku, gdy jest klikany */
+a:active {
+    color: green; /* Kolor linku podczas kliknięcia */
+}
+
+
 header {
     display: flex;
     justify-content: space-between;
@@ -36,6 +55,8 @@ header .right-buttons button:hover {
 }
 
 header .logo img {
+    display: flex;
+    justify-content: center;
     height: 50px;
 }
 
@@ -74,8 +95,8 @@ header .logo img {
 }
 
 .products .product img {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     display: block;
     margin: 0 auto 10px auto;
 }
@@ -102,3 +123,4 @@ footer {
 .policy-links a:hover {
     color: #ff0000;
 }
+
