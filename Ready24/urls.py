@@ -20,13 +20,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 from shop.views import (
     IndexView,
-    CategoryView
+    CategoryView,
+    LoginView,
+    LogoutView,
+    CreateUserView,
+    ProductView
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
     path('category/<slug>', CategoryView.as_view(), name='categories'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('register/', CreateUserView.as_view(), name='register'),
+    path('product/<slug>', ProductView.as_view(), name='product'),
 ]
 
 if settings.DEBUG:

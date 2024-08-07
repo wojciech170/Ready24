@@ -26,7 +26,19 @@
     </div>
     <div class="right-buttons">
         {#            <button class="language">Zmień język</button>#}
-        <button class="login">Log in / Profile</button>
+        {% if user.is_authenticated %}
+            <a href="#">
+                <button class="login">{{ user.username }}</button>
+            </a>
+            <a href="/logout/">
+                <button class="login">Logout</button>
+            </a>
+        {% else %}
+            <a href="/login/">
+                <button class="login">Login</button>
+            </a>
+        {% endif %}
+
     </div>
 </header>
 {% block content %}
@@ -54,7 +66,6 @@
         {#                >#}
         {#                <p>Produkt 2</p>#}
         {#            </div>#}
-        <!-- Dodaj więcej produktów według potrzeby -->
         {#        </div>#}
     </main>
 

@@ -20,7 +20,7 @@ class Tool(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -42,7 +42,7 @@ class Product(models.Model):
     weight = models.IntegerField(default=0)
     tool = models.ManyToManyField(Tool)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
 
     def __str__(self):
         return self.name

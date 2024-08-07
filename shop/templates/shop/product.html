@@ -1,0 +1,72 @@
+{#{% extends 'shop/base.html' %}#}
+{#{% block title %}{{ product.name }}{% endblock %}#}
+{#{% block content %}#}
+{#    <h1>{{ product.name }}</h1>#}
+{#    <div>#}
+{#        <div>#}
+{#            {% for img in product.picture_set.all %}#}
+{#                <img src="{{ img.image.url }}" alt="{{ product.name }}">#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <div>#}
+{#            <h2>Tools</h2>#}
+{#            <ol>#}
+{#                {% for tool in product.tool.all %}#}
+{#                    <li>{{ tool.name }}</li>#}
+{#                {% endfor %}#}
+{#            </ol>#}
+{#        </div>#}
+{#        <div>#}
+{#            <h2>Dimensions</h2>#}
+{#            <strong>Height </strong> {{ product.height }}mm<br>#}
+{#            <strong>Lenght </strong> {{ product.length }}mm<br>#}
+{#            <strong>Width </strong> {{ product.width }}mm<br>#}
+{#            <strong>Weight </strong> {{ product.weight }}g<br>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
+
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="product-container">
+        <div class="image-section">
+            <!-- Main image -->
+            <div class="main-image">
+                <img id="mainImage" src="{{ product.picture_set.all.0.image.url }}" alt="{{ product.name }}">
+            </div>
+
+            <!-- Thumbnails -->
+            <div class="thumbnails">
+                {% for img in product.picture_set.all %}
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" onclick="changeImage(this)">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h1>{{ product.name }}</h1>
+            <h2>Price: {{ product.price }} ISK</h2>
+            <a href="#">
+                <button>Add to cart</button>
+            </a>
+            <div>
+                <h2>Tools</h2>
+                <ol>
+                    {% for tool in product.tool.all %}
+                        <li>{{ tool.name }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div>
+                <h2>Dimensions</h2>
+                <strong>Height: </strong> {{ product.height }}mm<br>
+                <strong>Length: </strong> {{ product.length }}mm<br>
+                <strong>Width: </strong> {{ product.width }}mm<br>
+                <strong>Weight: </strong> {{ product.weight }}g<br>
+            </div>
+        </div>
+    </div>
+{% endblock %}
