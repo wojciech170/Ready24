@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Category, Product
+from .models import Category, Product, Tool
 from .forms import LoginForm, UserForm, SearchForm
 
 from django.contrib.auth import get_user_model, authenticate, login, logout
@@ -91,7 +91,7 @@ class SearchView(View):
 
 class CategoryView(View):
     """
-    Handles displaying all products under a specific category.
+    Handles displaying all products under a specific category with filtering by tools.
 
     Methods:
     --------
@@ -101,6 +101,8 @@ class CategoryView(View):
         - Functionality:
             - Retrieves the category object using the provided slug.
             - Fetches all products associated with this category.
+            - Let filter products by their tools.
+            -
             - Passes the list of categories, the specific category, and its products to the template context.
             - Renders the `shop/category.html` template.
         - Error Handling:
@@ -114,11 +116,20 @@ class CategoryView(View):
     def get(self, request, slug):
         try:
             category = Category.objects.get(slug=slug)
+            tools = Tool.objects.all()  # Pobieramy wszystkie narzędzia
             products = Product.objects.filter(category=category)
+            selected_tools = request.GET.getlist('tools')
+
+            if selected_tools:
+                for tool_id in selected_tools:
+                    products = products.filter(tool__id=tool_id)
+
             ctx = {
                 "categories": categories,
                 "category": category,
-                "products": products
+                "products": products,
+                "tools": tools,
+                "selected_tools": list(map(int, selected_tools)),  # Przekazujemy zaznaczone narzędzia
             }
             return render(request, "shop/category.html", ctx)
         except Category.DoesNotExist:

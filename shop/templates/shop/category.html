@@ -3,6 +3,20 @@
 {% block content %}
     <h1>{{ category.name }}</h1>
     <p>{{ category.description }}</p>
+
+     <!-- Formularz filtrów -->
+    <form method="get">
+        <h3>Filter by Tools</h3>
+        {% for tool in tools %}
+            <label>
+                <input type="checkbox" name="tools" value="{{ tool.id }}"
+                    {% if tool.id in selected_tools %}checked{% endif %}>
+                {{ tool.name }}
+            </label><br>
+        {% endfor %}
+        <button type="submit">Filter</button>
+    </form>
+
     <div class="products">
         {% for prod in products %}
             <a href="/product/{{ prod.slug }}">
@@ -14,6 +28,8 @@
                     <p>{{ prod.price }} ISK</p>
                 </div>
             </a>
+            {% empty %}
+            <h2>No matching products</h2>
         {% endfor %}
     </div>
 {% endblock %}
