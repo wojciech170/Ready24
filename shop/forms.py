@@ -24,3 +24,7 @@ class UserForm(forms.Form):
         if data['password1'] != data['password2']:
             raise ValidationError('passwords do not match')
         return data
+
+
+class SearchForm(forms.Form):
+    searched = forms.CharField(label='Search')
