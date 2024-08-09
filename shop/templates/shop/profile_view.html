@@ -1,0 +1,22 @@
+{% extends 'shop/base.html' %}
+{% block title %} {{ user.username }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <h1> {{ user.username }} information:</h1>
+Name: {{ user.first_name }}<br>
+Surname: {{ user.last_name }}<br>
+E-mail: {{ user.email }}<br>
+
+<h2>Addresses:</h2>
+{% for address in addresses %}
+    <h3>{{ address.name }}:</h3>
+    Street: {{ address.street }}
+    City: {{ address.city }}
+    Zip code: {{ address.zipcode }}
+{% empty %}
+    You don't have any addresses!
+{% endfor %}<br>
+<a href="/profile/{{ user.username }}/addaddress/"><button>Add address</button>  </a>
+</div>
+{% endblock %}

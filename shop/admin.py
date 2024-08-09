@@ -8,6 +8,7 @@ from .models import (
     Picture,
     PromoCodes,
     ShoppingCart,
+    Address,
 )
 
 admin.site.register(Product)
@@ -16,4 +17,5 @@ admin.site.register(Category)
 admin.site.register(Picture)
 admin.site.register(PromoCodes)
 admin.site.register(ShoppingCart)
+admin.site.register(Address)
 

@@ -1,8 +1,8 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Category, Product, Tool
-from .forms import LoginForm, UserForm, SearchForm
+from .models import Category, Product, Tool, Address
+from .forms import LoginForm, UserForm, SearchForm, AddressForm
 
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
@@ -100,23 +100,28 @@ class CategoryView(View):
             - slug (str): The unique slug of the category to be displayed.
         - Functionality:
             - Retrieves the category object using the provided slug.
+            - Fetches all tools associated with the products in this category.
             - Fetches all products associated with this category.
-            - Let filter products by their tools.
-            -
-            - Passes the list of categories, the specific category, and its products to the template context.
-            - Renders the `shop/category.html` template.
+            - Optionally filters the products by the tools selected via GET parameters.
+            - Prepares the context (`ctx`) with:
+                - A list of all categories (for navigation or other purposes).
+                - The specific category object.
+                - The filtered list of products.
+                - The list of tools available in the category.
+                - The list of selected tool IDs.
+            - Renders the `shop/category_view.html` template with the prepared context.
         - Error Handling:
-            - If the category does not exist, raises a `Http404` error with the message "Category does not exist".
+            - If the category does not exist, raises an `Http404` error with the message "Category does not exist".
 
     Template:
     ---------
-    - shop/category.html
+    - shop/category_view.html
     """
 
     def get(self, request, slug):
         try:
             category = Category.objects.get(slug=slug)
-            tools = Tool.objects.all()  # Pobieramy wszystkie narzędzia
+            tools = Tool.objects.filter(product__category=category).distinct()
             products = Product.objects.filter(category=category)
             selected_tools = request.GET.getlist('tools')
 
@@ -127,11 +132,11 @@ class CategoryView(View):
             ctx = {
                 "categories": categories,
                 "category": category,
-                "products": products,
+                "products": products.distinct(),
                 "tools": tools,
-                "selected_tools": list(map(int, selected_tools)),  # Przekazujemy zaznaczone narzędzia
+                "selected_tools": list(map(int, selected_tools)),
             }
-            return render(request, "shop/category.html", ctx)
+            return render(request, "shop/category_view.html", ctx)
         except Category.DoesNotExist:
             raise Http404("Category does not exist")
 
@@ -148,11 +153,11 @@ class ProductView(View):
         - Functionality:
             - Retrieves the product object using the provided slug.
             - Passes the product and list of categories to the template context.
-            - Renders the `shop/product.html` template.
+            - Renders the `shop/product_view.html` template.
 
     Template:
     ---------
-    - shop/product.html
+    - shop/product_view.html
     """
 
     def get(self, request, slug):
@@ -161,7 +166,7 @@ class ProductView(View):
             "product": product,
             "categories": categories,
         }
-        return render(request, "shop/product.html", ctx)
+        return render(request, "shop/product_view.html", ctx)
 
 
 class LoginView(View):
@@ -280,3 +285,65 @@ class CreateUserView(View):
             return redirect('login/')
         else:
             return render(request, 'shop/create_user.html', {'form': form})
+
+
+class ProfileView(View):
+    """
+    Handles displaying a user's profile, including their addresses.
+
+    Methods:
+    --------
+    GET:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object.
+            - username (str): The username of the user whose profile is to be displayed.
+        - Functionality:
+            - Retrieves the `User` object based on the provided username.
+            - Fetches all addresses associated with the user.
+            - Prepares the context (`ctx`) with:
+                - The `User` object.
+                - A list of all categories (for navigation or other purposes).
+                - The list of addresses associated with the user.
+            - Renders the `shop/profile_view.html` template with the prepared context.
+        - Error Handling:
+            - If the user with the provided username does not exist, this view may raise a `User.DoesNotExist` exception.
+
+    Template:
+    ---------
+    - shop/profile_view.html
+    """
+
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        addresses = Address.objects.filter(user=user)
+        ctx = {
+            "user": user,
+            "categories": categories,
+            "addresses": addresses,
+        }
+        return render(request, 'shop/profile_view.html', ctx)
+
+
+class AddAddressView(View):
+    def get(self, request, username):
+        form = AddressForm()
+        ctx = {
+            "form": form,
+            "categories": categories,
+            "user": username,
+        }
+        return render(request, 'shop/add_address.html', ctx)
+
+    def post(self, request, username):
+        user = User.objects.get(username=username)
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = Address.objects.create(
+                user=user,
+                name=form.cleaned_data['name'],
+                city=form.cleaned_data['city'],
+                zipcode=form.cleaned_data['zipcode'],
+                street=form.cleaned_data['street'],
+            )
+            address.save()
+        return redirect(f'/profile/{user.username}')

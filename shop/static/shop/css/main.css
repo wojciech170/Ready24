@@ -10,18 +10,17 @@ a {
     color: #fff;
     text-decoration: none;
 }
+
 a:visited {
-    color: slategray; /* Kolor odwiedzonego linku */
+    color: slategray;
 }
 
-/* Kolor linku, gdy najedziesz na niego myszką */
 a:hover {
-    color: darkred; /* Kolor linku podczas najechania myszką */
+    color: darkred;
 }
 
-/* Kolor linku, gdy jest klikany */
 a:active {
-    color: green; /* Kolor linku podczas kliknięcia */
+    color: green;
 }
 
 
@@ -140,18 +139,23 @@ footer {
     width: 100%;
     max-width: 500px;
     height: auto;
+    object-fit: contain;
     margin-bottom: 20px;
 }
 
 .thumbnails {
     display: flex;
+    justify-content: center;
     gap: 10px;
 }
 
 .thumbnails img {
-    width: 100px;
-    height: auto;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
     cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s ease;
 }
 
 .info-section {

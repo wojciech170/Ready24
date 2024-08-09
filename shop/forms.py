@@ -1,7 +1,7 @@
 import django.forms as forms
 from django.core.exceptions import ValidationError
 
-from .models import Product
+from .models import Product, Address
 
 from .validators import validate_login
 
@@ -28,3 +28,9 @@ class UserForm(forms.Form):
 
 class SearchForm(forms.Form):
     searched = forms.CharField(label='Search')
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude = ['user']

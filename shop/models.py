@@ -197,3 +197,6 @@ class Address(models.Model):
     street = models.CharField(max_length=128)
     city = models.CharField(max_length=128)
     zipcode = models.CharField(max_length=128)
+
+    def __str__(self):
+        return f'{self.user.username} adress: {self.name}'

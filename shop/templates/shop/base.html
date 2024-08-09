@@ -24,9 +24,8 @@
         <a href="/"> <img src="{% static 'shop/images/../../../media/images/logo.avif' %}" alt="Logo"></a>
     </div>
     <div class="right-buttons">
-        {#            <button class="language">Zmień język</button>#}
         {% if user.is_authenticated %}
-            <a href="#">
+            <a href="/profile/{{ user.username }}">
                 <button class="login">{{ user.username }}</button>
             </a>
             <a href="/logout/">
@@ -45,46 +44,11 @@
         {% for cat in categories %}
             <div><a href="category/{{ cat.slug }}"> {{ cat }}</div>
         {% endfor %}
-        {#        <div class="carousel">#}
-        {#            <div class="banner">Banner 1</div>#}
-        {#            <div class="banner">Banner 2</div>#}
-        {#            <div class="banner">Banner 3</div>#}
-        {#        </div>#}
-
-        {#        <div class="products">#}
-        {#            <!-- Przykładowe produkty -->#}
-        {#            <div class="product">#}
-        {#                <img #}
-        {#                        src="product1.jpg" alt="Produkt 1"#}
-        {#                >#}
-        {#                <p>Produkt 1</p>#}
-        {#            </div>#}
-        {#            <div class="product">#}
-        {#                <img#}
-        {#                        src="product2.jpg" alt="Produkt 2"#}
-        {#                >#}
-        {#                <p>Produkt 2</p>#}
-        {#            </div>#}
-        {#        </div>#}
     </main>
 
 {% endblock %}
 
-{#<footer>#}
-{#    <div class="footer-links">#}
-{#        <a href="#">Link 1</a>#}
-{#        <a href="#">Link 2</a>#}
-{#        <a href="#">Link 3</a>#}
-{#        <a href="#">Link 4</a>#}
-{#    </div>#}
-{#    <div class="policy-links">#}
-{#        <a href="#">Refund Policy</a>#}
-{#        <a href="#">Privacy Policy</a>#}
-{#        <a href="#">Terms of Service</a>#}
-{#        <a href="#">Contact Information</a>#}
-{#    </div>#}
-{#</footer>#}
-
 <script src="{% static 'shop/js/script.js' %}"></script>
+
 </body>
 </html>
