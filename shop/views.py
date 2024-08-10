@@ -8,9 +8,6 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 
 User = get_user_model()
 
-# Retrieve all categories to be available globally in the views.
-categories = Category.objects.all()
-
 
 class IndexView(View):
     """
@@ -29,7 +26,7 @@ class IndexView(View):
     """
 
     def get(self, request):
-        return render(request, "shop/base.html", {"categories": categories})
+        return render(request, "shop/base.html")
 
 
 class SearchView(View):
@@ -66,7 +63,6 @@ class SearchView(View):
         form = SearchForm()
         ctx = {
             'form': form,
-            'categories': categories,
         }
         return render(request, "shop/search.html", ctx)
 
@@ -78,13 +74,12 @@ class SearchView(View):
                 ctx = {
                     'form': form,
                     'products': products,
-                    'categories': categories,
+                    # 'categories': categories,
                 }
                 return render(request, "shop/search.html", ctx)
             except Product.DoesNotExist:
                 ctx = {
                     'form': form,
-                    'categories': categories,
                 }
                 return render(request, "shop/search.html", ctx)
 
@@ -130,7 +125,6 @@ class CategoryView(View):
                     products = products.filter(tool__id=tool_id)
 
             ctx = {
-                "categories": categories,
                 "category": category,
                 "products": products.distinct(),
                 "tools": tools,
@@ -164,7 +158,6 @@ class ProductView(View):
         product = Product.objects.get(slug=slug)
         ctx = {
             "product": product,
-            "categories": categories,
         }
         return render(request, "shop/product_view.html", ctx)
 
@@ -198,7 +191,7 @@ class LoginView(View):
 
     def get(self, request):
         form = LoginForm()
-        return render(request, 'shop/login.html', {'form': form, 'categories': categories})
+        return render(request, 'shop/login.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
@@ -270,7 +263,7 @@ class CreateUserView(View):
 
     def get(self, request):
         form = UserForm
-        return render(request, 'shop/create_user.html', {'form': form, 'categories': categories})
+        return render(request, 'shop/create_user.html', {'form': form})
 
     def post(self, request):
         form = UserForm(request.POST)
@@ -318,18 +311,63 @@ class ProfileView(View):
         addresses = Address.objects.filter(user=user)
         ctx = {
             "user": user,
-            "categories": categories,
             "addresses": addresses,
         }
         return render(request, 'shop/profile_view.html', ctx)
 
 
+class EditProfileView(View):
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        form = UserForm
+        ctx = {
+            "user": user,
+            # "categories": categories,
+        }
+        return render(request, 'shop/edit_profile.html', ctx)
+
+
 class AddAddressView(View):
+    """
+    Handles adding a new address for a user.
+
+    Methods:
+    --------
+    GET:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object.
+            - username (str): The username of the user for whom the address is being added.
+        - Functionality:
+            - Initializes a blank `AddressForm` for creating a new address.
+            - Prepares the context (`ctx`) with:
+                - The `AddressForm` instance.
+                - A list of all categories (for navigation or other purposes).
+                - The username of the user for whom the address is being added.
+            - Renders the `shop/add_address.html` template with the prepared context.
+
+    POST:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object containing the form data.
+            - username (str): The username of the user for whom the address is being added.
+        - Functionality:
+            - Retrieves the `User` object based on the provided username.
+            - Initializes an `AddressForm` with the POST data.
+            - Validates the form data. If valid:
+                - Creates a new `Address` object associated with the user.
+                - Saves the new address to the database.
+            - Redirects to the user's profile page after successfully adding the address.
+        - Error Handling:
+            - If the user with the provided username does not exist, this view may raise a `User.DoesNotExist` exception.
+
+    Template:
+    ---------
+    - shop/add_address.html
+    """
+
     def get(self, request, username):
         form = AddressForm()
         ctx = {
             "form": form,
-            "categories": categories,
             "user": username,
         }
         return render(request, 'shop/add_address.html', ctx)
