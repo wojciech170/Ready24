@@ -9,6 +9,7 @@ from .models import (
     PromoCodes,
     ShoppingCart,
     Address,
+    ShoppingCartProduct
 )
 
 admin.site.register(Product)
@@ -18,4 +19,5 @@ admin.site.register(Picture)
 admin.site.register(PromoCodes)
 admin.site.register(ShoppingCart)
 admin.site.register(Address)
+admin.site.register(ShoppingCartProduct)
 

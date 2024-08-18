@@ -1,4 +1,6 @@
 import datetime
+from itertools import product
+
 from django.utils.text import slugify
 
 from django.contrib.auth.models import User
@@ -91,7 +93,7 @@ class Product(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-    def price(self):
+    def calculate_price(self):
         """
         Calculates the gross price of the product by applying the VAT rate to the net price.
 
@@ -151,13 +153,13 @@ class ShoppingCart(models.Model):
 
     Attributes:
         user (ForeignKey): The user who owns the shopping cart.
-        product (ManyToManyField): The products added to the cart.
+        shopping_cart_product (ManyToManyField): The products added to the cart.
         promo_code (ForeignKey): An optional promotional code applied to the cart.
         active (bool): Indicates whether the shopping cart is currently active.
     """
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ManyToManyField(Product, through='ShoppingCartProduct', related_name='shopping_cart_product')
+    shopping_cart_product = models.ManyToManyField(Product, through='ShoppingCartProduct', related_name='shopping_cart_product')
     promo_code = models.ForeignKey(PromoCodes, on_delete=models.SET_NULL, null=True, blank=True)
     active = models.BooleanField(default=True)
 
@@ -178,6 +180,9 @@ class ShoppingCartProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+    def total_price(self):
+        return self.product.calculate_price() * self.quantity
 
 
 class Address(models.Model):

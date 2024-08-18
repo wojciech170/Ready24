@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <div align="center">
+        <h1>Edit</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit" value="Register!">
+        </form>
+    </div>
+{% endblock %}

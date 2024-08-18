@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
@@ -28,6 +29,8 @@ from shop.views import (
     SearchView,
     ProfileView,
     AddAddressView,
+    AddToCartView,
+    CartView,
 )
 
 urlpatterns = [
@@ -40,7 +43,9 @@ urlpatterns = [
     path('product/<slug>', ProductView.as_view(), name='product'),
     path('search/', SearchView.as_view(), name='search'),
     path('profile/<username>', ProfileView.as_view(), name='profile'),
-    path('profile/<username>/addaddress/', AddAddressView.as_view(), name='addaddress'),
+    path('profile/<username>/addaddress/', AddAddressView.as_view(), name='add_address'),
+    path('profile/addtocart/', AddToCartView.as_view(), name='add_to_cart'),
+    path('profile/<username>/cart/', CartView.as_view(), name='cart'),
 ]
 
 if settings.DEBUG:

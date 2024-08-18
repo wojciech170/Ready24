@@ -17,7 +17,7 @@ class UserForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput)
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
-    email = forms.EmailField(label='Email')
+    email = forms.EmailField(label='Email', widget=forms.EmailInput)
 
     def clean(self) -> dict[str, any]:
         data = super().clean()

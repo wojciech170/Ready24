@@ -1,7 +1,11 @@
+from venv import create
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Category, Product, Tool, Address
+from .models import Category, Product, Tool, Address, ShoppingCart, ShoppingCartProduct
 from .forms import LoginForm, UserForm, SearchForm, AddressForm
 
 from django.contrib.auth import get_user_model, authenticate, login, logout
@@ -322,9 +326,20 @@ class EditProfileView(View):
         form = UserForm
         ctx = {
             "user": user,
-            # "categories": categories,
+            "form": form,
         }
         return render(request, 'shop/edit_profile.html', ctx)
+
+    def post(self, request, username):
+        user = User.objects.get(username=username)
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.username = form.cleaned_data['username']
+            user.save()
+            return redirect(f'/profile/{user.username}')
 
 
 class AddAddressView(View):
@@ -385,3 +400,26 @@ class AddAddressView(View):
             )
             address.save()
         return redirect(f'/profile/{user.username}')
+
+
+class AddToCartView(LoginRequiredMixin, View):
+    login_url = '/login'
+
+    def post(self, request):
+        product_id = request.POST['product_id']
+        product = get_object_or_404(Product, pk=product_id)
+        cart, created = ShoppingCart.objects.get_or_create(user=request.user, active=True)
+
+        cart_item, created = ShoppingCartProduct.objects.get_or_create(shopping_cart=cart, product=product)
+
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+
+        return redirect(f'/profile/{request.user.username}/cart')
+
+
+class CartView(View):
+    def get(self, request, username):
+        cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        return render(request, 'shop/cart_view.html', {'cart': cart})

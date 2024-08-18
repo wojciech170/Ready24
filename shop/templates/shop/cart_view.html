@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    {% if cart.shopping_cart_product.exists %}
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="2">Product</td>
+                <td>Amount</td>
+                <td>Total</td>
+            </tr>
+            {% for cart_item in cart.shopping_cart_product.all %}
+                <tr>
+                    <td><img class="cart_img" src="{{ cart_item.picture_set.first.image.url }}" alt="{{ cart_item.name }}"></td>
+                    <td>
+                        <div>
+                            <a>{{ cart_item.name }}</a><br>
+                            <a>{{ cart_item.calculate_price }}ISK</a>
+                        </div>
+                    </td>
+                    <td>{{ cart_item.quantity }}</td>
+                    <td>{{ cart_item.total_price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h2>Cart is empty</h2>
+    {% endif %}
+{% endblock %}

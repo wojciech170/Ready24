@@ -20,10 +20,12 @@
 
         <div class="info-section">
             <h1>{{ product.name }}</h1>
-            <h2>Price: {{ product.price }} ISK</h2>
-            <a href="#">
-                <button>Add to cart</button>
-            </a>
+            <h2>Price: {{ product.calculate_price }} ISK</h2>
+            <form method="post" action="{% url 'add_to_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <button type="submit">Add to cart</button>
+            </form>
             <div>
                 <h2>Tools</h2>
                 <ol>
