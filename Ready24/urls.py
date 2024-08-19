@@ -45,7 +45,7 @@ urlpatterns = [
     path('profile/<username>', ProfileView.as_view(), name='profile'),
     path('profile/addaddress/', AddAddressView.as_view(), name='add_address'),
     path('profile/addtocart/', AddToCartView.as_view(), name='add_to_cart'),
-    path('profile/<username>/cart/', CartView.as_view(), name='cart'),
+    path('profile/cart/', CartView.as_view(), name='cart'),
 ]
 
 if settings.DEBUG:

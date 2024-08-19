@@ -474,11 +474,11 @@ class AddToCartView(LoginRequiredMixin, View):
 class CartView(LoginRequiredMixin, View):
     login_url = '/login'
 
-    def get(self, request, username):
+    def get(self, request):
         cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
-        print(cart)
-        print(cart.shopping_cart_product.all())
-        for item in cart.shopping_cart_product.all():
-            print(item)
-            print(item.calculate_price())
-        return render(request, 'shop/cart_view.html', {'cart': cart})
+        cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
+        ctx = {
+            "cart": cart,
+            "cart_products": cart_products,
+        }
+        return render(request, 'shop/cart_view.html', ctx)
