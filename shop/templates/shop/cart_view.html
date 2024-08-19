@@ -10,7 +10,8 @@
             </tr>
             {% for cart_item in cart.shopping_cart_product.all %}
                 <tr>
-                    <td><img class="cart_img" src="{{ cart_item.picture_set.first.image.url }}" alt="{{ cart_item.name }}"></td>
+                    <td><img class="cart_img" src="{{ cart_item.picture_set.first.image.url }}"
+                             alt="{{ cart_item.name }}"></td>
                     <td>
                         <div>
                             <a>{{ cart_item.name }}</a><br>

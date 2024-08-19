@@ -13,29 +13,30 @@
         <button id="dropdownButton">Categories</button>
         <div id="dropdownMenu" style="display: none">
             {% for cat in categories %}
-                <a href="/category/{{ cat.slug }}">{{ cat }}</a>
+                <a href="{% url 'categories' slug=cat.slug %}">{{ cat }}</a>
             {% endfor %}
         </div>
-    <a href="/search/">
-        <button id="searchButton">Search</button>
-    </a>
+        <a href="{% url 'search' %}">
+            <button id="searchButton">Search</button>
+        </a>
     </div>
     <div class="logo">
-        <a href="/"> <img src="{% static 'shop/images/../../../media/images/logo.avif' %}" alt="Logo"></a>
+        <a href="{% url 'index' %}"> <img src="{% static 'shop/images/../../../media/images/logo.avif' %}"
+                                          alt="Logo"></a>
     </div>
     <div class="right-buttons">
         {% if user.is_authenticated %}
-            <a href="/profile/{{ user.username }}/cart">
+            <a href="{% url 'cart' username=user.username %}">
                 <button class="login">Cart</button>
             </a>
-            <a href="/profile/{{ user.username }}">
+            <a href="{% url 'profile' username=user.username %}">
                 <button class="login">{{ user.username }}</button>
             </a>
-            <a href="/logout/">
+            <a href="{% url 'logout' %}">
                 <button class="login">Logout</button>
             </a>
         {% else %}
-            <a href="/login/">
+            <a href="{% url 'login' %}">
                 <button class="login">Login</button>
             </a>
         {% endif %}
@@ -45,7 +46,7 @@
 {% block content %}
     <main>
         {% for cat in categories %}
-            <div><a href="category/{{ cat.slug }}"> {{ cat }}</div>
+            <div><a href="{% url 'categories' slug=cat.slug %}"> {{ cat }}</a></div>
         {% endfor %}
     </main>
 

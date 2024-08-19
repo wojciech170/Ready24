@@ -284,9 +284,17 @@ class CreateUserView(View):
             return render(request, 'shop/create_user.html', {'form': form})
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
     """
     Handles displaying a user's profile, including their addresses.
+
+    Inherits:
+    ----------
+    - LoginRequiredMixin: Ensures that the user is authenticated before accessing this view.
+
+    Attributes:
+    ----------
+    - login_url (str): The URL to redirect to if the user is not authenticated.
 
     Methods:
     --------
@@ -310,6 +318,8 @@ class ProfileView(View):
     - shop/profile_view.html
     """
 
+    login_url = '/login'
+
     def get(self, request, username):
         user = User.objects.get(username=username)
         addresses = Address.objects.filter(user=user)
@@ -320,7 +330,9 @@ class ProfileView(View):
         return render(request, 'shop/profile_view.html', ctx)
 
 
-class EditProfileView(View):
+class EditProfileView(LoginRequiredMixin, View):
+    login_url = '/login'
+
     def get(self, request, username):
         user = User.objects.get(username=username)
         form = UserForm
@@ -342,9 +354,17 @@ class EditProfileView(View):
             return redirect(f'/profile/{user.username}')
 
 
-class AddAddressView(View):
+class AddAddressView(LoginRequiredMixin, View):
     """
     Handles adding a new address for a user.
+
+    Inherits:
+    ----------
+    - LoginRequiredMixin: Ensures that the user is authenticated before accessing this view.
+
+    Attributes:
+    ----------
+    - login_url (str): The URL to redirect to if the user is not authenticated.
 
     Methods:
     --------
@@ -379,16 +399,17 @@ class AddAddressView(View):
     - shop/add_address.html
     """
 
-    def get(self, request, username):
+    login_url = '/login'
+
+    def get(self, request):
         form = AddressForm()
         ctx = {
             "form": form,
-            "user": username,
         }
         return render(request, 'shop/add_address.html', ctx)
 
-    def post(self, request, username):
-        user = User.objects.get(username=username)
+    def post(self, request):
+        user = request.user
         form = AddressForm(request.POST)
         if form.is_valid():
             address = Address.objects.create(
@@ -403,6 +424,37 @@ class AddAddressView(View):
 
 
 class AddToCartView(LoginRequiredMixin, View):
+    """
+    Handles adding a product to the user's shopping cart.
+
+    Inherits:
+    ----------
+    - LoginRequiredMixin: Ensures that the user is authenticated before accessing this view.
+
+    Attributes:
+    ----------
+    - login_url (str): The URL to redirect to if the user is not authenticated.
+
+    Methods:
+    --------
+    POST:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object containing the form data.
+        - Functionality:
+            - Retrieves the `Product` object based on the `product_id` provided in the POST data.
+            - Gets or creates an active `ShoppingCart` object for the current user.
+            - Gets or creates a `ShoppingCartProduct` object linking the product to the cart.
+            - If the product is already in the cart, increments the quantity by 1.
+            - Saves the cart item to the database.
+            - Redirects the user to their cart page after successfully adding the product.
+        - Error Handling:
+            - If the product with the provided `product_id` does not exist, raises a `Http404` error.
+
+    Template:
+    ---------
+    - This view does not directly render a template but redirects to the user's cart page.
+    """
+
     login_url = '/login'
 
     def post(self, request):
@@ -419,7 +471,14 @@ class AddToCartView(LoginRequiredMixin, View):
         return redirect(f'/profile/{request.user.username}/cart')
 
 
-class CartView(View):
+class CartView(LoginRequiredMixin, View):
+    login_url = '/login'
+
     def get(self, request, username):
         cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        print(cart)
+        print(cart.shopping_cart_product.all())
+        for item in cart.shopping_cart_product.all():
+            print(item)
+            print(item.calculate_price())
         return render(request, 'shop/cart_view.html', {'cart': cart})

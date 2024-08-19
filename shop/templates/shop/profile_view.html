@@ -17,6 +17,6 @@ E-mail: {{ user.email }}<br>
 {% empty %}
     You don't have any addresses!
 {% endfor %}<br>
-<a href="/profile/{{ user.username }}/addaddress/"><button>Add address</button>  </a>
+<a href="{% url 'add_address' %}"><button>Add address</button>  </a>
 </div>
 {% endblock %}

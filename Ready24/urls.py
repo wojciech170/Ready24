@@ -43,7 +43,7 @@ urlpatterns = [
     path('product/<slug>', ProductView.as_view(), name='product'),
     path('search/', SearchView.as_view(), name='search'),
     path('profile/<username>', ProfileView.as_view(), name='profile'),
-    path('profile/<username>/addaddress/', AddAddressView.as_view(), name='add_address'),
+    path('profile/addaddress/', AddAddressView.as_view(), name='add_address'),
     path('profile/addtocart/', AddToCartView.as_view(), name='add_to_cart'),
     path('profile/<username>/cart/', CartView.as_view(), name='cart'),
 ]

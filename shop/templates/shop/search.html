@@ -2,15 +2,15 @@
 {% block title %} Search {% endblock %}
 {% block content %}
     <div align="center">
-    <form method="post">
-    {% csrf_token %}
-{{ form.as_p }}
-    <input type="submit" value="Search">
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Search">
+        </form>
     </div>
     <div align="center" class="products">
-    {% for prod in products %}
-            <a href="/product/{{ prod.slug }}">
+        {% for prod in products %}
+            <a href="{% url 'product' slug=prod.slug %}">
                 <div class="product">
                     <img
                             src="{{ prod.picture_set.first.image.url }}" alt="{{ prod.name }}"
@@ -20,7 +20,7 @@
                 </div>
             </a>
         {% empty %}
-        <h3>Don't find matching products</h3>
+            <h3>Don't find matching products</h3>
         {% endfor %}
     </div>
 {% endblock %}
