@@ -1,7 +1,7 @@
 {% extends 'shop/base.html' %}
 {% block content %}
-    {% if cart_products %}
-        <div>
+    {% if cart_products and address %}
+        <div class="centered">
             <table border="1" class="cart_products_table" align="center">
                 <tbody>
                 <tr>
@@ -29,14 +29,16 @@
                 </tr>
                 </tbody>
             </table>
-            <br>
-                <div align="center"><a href="{% url 'checkout' %}">
-                    <button type="submit"> Checkout</button>
-                </a></div>
+        </div>
+        <div>
+            <h2>Chosen address:</h2><br>
+            <div> {{ address.street }} </div>
+            <div> {{ address.city }} </div>
+            <div> {{ address.zipcode }} </div>
         </div>
     {% else %}
         <div>
-            <h2>Cart is empty</h2>
+            <h2>What are you doing here?? Order something and choose address</h2>
         </div>
     {% endif %}
 {% endblock %}

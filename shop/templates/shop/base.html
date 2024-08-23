@@ -43,6 +43,7 @@
 
     </div>
 </header>
+<div>
 {% block content %}
     <main>
         {% for cat in categories %}
@@ -51,6 +52,7 @@
     </main>
 
 {% endblock %}
+</div>
 
 <script src="{% static 'shop/js/script.js' %}"></script>
 

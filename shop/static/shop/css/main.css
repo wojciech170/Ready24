@@ -167,3 +167,14 @@ footer {
     height: 80px;
     object-fit: contain;
 }
+
+.cart_products_table {
+    text-align: center;
+}
+
+/*.centered {*/
+/*    display: flex;*/
+/*    align-self: center;*/
+/*    align-content: center;*/
+/*    align-items: center;*/
+/*}*/

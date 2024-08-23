@@ -1,3 +1,4 @@
+from unicodedata import decimal
 from venv import create
 
 from django.contrib.auth.decorators import login_required
@@ -159,7 +160,7 @@ class ProductView(View):
     """
 
     def get(self, request, slug):
-        product = Product.objects.get(slug=slug)
+        product = get_object_or_404(Product, slug=slug)
         ctx = {
             "product": product,
         }
@@ -266,7 +267,7 @@ class CreateUserView(View):
     """
 
     def get(self, request):
-        form = UserForm
+        form = UserForm()
         return render(request, 'shop/create_user.html', {'form': form})
 
     def post(self, request):
@@ -279,7 +280,7 @@ class CreateUserView(View):
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
             )
-            return redirect('login/')
+            return redirect('/login/')
         else:
             return render(request, 'shop/create_user.html', {'form': form})
 
@@ -335,7 +336,7 @@ class EditProfileView(LoginRequiredMixin, View):
 
     def get(self, request, username):
         user = User.objects.get(username=username)
-        form = UserForm
+        form = UserForm()
         ctx = {
             "user": user,
             "form": form,
@@ -472,13 +473,85 @@ class AddToCartView(LoginRequiredMixin, View):
 
 
 class CartView(LoginRequiredMixin, View):
+    """
+    Handles displaying the user's active shopping cart.
+
+    Inherits:
+    ----------
+    - LoginRequiredMixin: Ensures that the user is authenticated before accessing this view.
+
+    Attributes:
+    ----------
+    - login_url (str): The URL to redirect to if the user is not authenticated.
+
+    Methods:
+    --------
+    GET:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object.
+        - Functionality:
+            - Retrieves the active `ShoppingCart` object associated with the current user.
+            - Fetches all `ShoppingCartProduct` objects linked to the user's active cart.
+            - Calculates the total price of all products in the cart, considering their quantity.
+            - Prepares the context (`ctx`) with:
+                - The active `ShoppingCart` object.
+                - The list of products (`ShoppingCartProduct`) in the cart.
+                - The total price of all items in the cart, rounded to two decimal places.
+            - Renders the `shop/cart_view.html` template with the prepared context.
+        - Error Handling:
+            - If no active shopping cart exists for the user, raises a `Http404` error.
+
+    Template:
+    ---------
+    - shop/cart_view.html
+    """
+
     login_url = '/login'
 
     def get(self, request):
         cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
         cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
+        total = 0
+        for cart_item in cart_products:
+            total += cart_item.quantity * cart_item.product.calculate_price()
+
         ctx = {
             "cart": cart,
             "cart_products": cart_products,
+            "total": round(total, 2),
         }
         return render(request, 'shop/cart_view.html', ctx)
+
+
+class CheckoutAddAddressView (LoginRequiredMixin, View):
+
+    login_url = '/login'
+
+    def get(self, request):
+        addresses = Address.objects.filter(user=request.user)
+
+        ctx = {
+            "addresses": addresses,
+        }
+        return render(request, 'shop/checkout_add_address.html', ctx)
+
+
+class CheckoutSummaryView (LoginRequiredMixin, View):
+    login_url = '/login'
+
+    def get(self, request):
+        address_id = request.POST.get('address')
+        address = Address.objects.get(pk=address_id)
+        cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
+        total = 0
+        for cart_item in cart_products:
+            total += cart_item.quantity * cart_item.product.calculate_price()
+
+        ctx = {
+            "cart_products": cart_products,
+            "total": round(total, 2),
+            "address": address,
+        }
+
+        return render(request,'shop/checkout_summary.html', ctx)
