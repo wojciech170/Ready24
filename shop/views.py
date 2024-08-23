@@ -472,7 +472,7 @@ class AddToCartView(LoginRequiredMixin, View):
             cart_item.quantity += 1
             cart_item.save()
 
-        return redirect('cart', username=request.user.username)
+        return redirect('cart')
 
 
 class CartView(LoginRequiredMixin, View):
