@@ -78,10 +78,13 @@ class SearchView(View):
                 }
                 return render(request, "shop/search.html", ctx)
             except Product.DoesNotExist:
-                ctx = {
-                    'form': form,
-                }
-                return render(request, "shop/search.html", ctx)
+                pass
+        ctx = {
+            'form': form,
+            'products': [],
+
+        }
+        return render(request, "shop/search.html", ctx)
 
 
 class CategoryView(View):
@@ -204,7 +207,7 @@ class LoginView(View):
 
             if user:
                 login(request, user)
-                return redirect('login')
+                return redirect('profile', username=user.username)
 
             return render(request, 'shop/login.html', {'form': form})
 
@@ -227,7 +230,7 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
-        return redirect('login')
+        return redirect('index')
 
 
 class CreateUserView(View):
@@ -314,7 +317,7 @@ class ProfileView(LoginRequiredMixin, View):
     - shop/profile_view.html
     """
 
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request, username):
         user = User.objects.get(username=username)
@@ -327,7 +330,7 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 class EditProfileView(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request, username):
         user = User.objects.get(username=username)
@@ -347,7 +350,7 @@ class EditProfileView(LoginRequiredMixin, View):
             user.email = form.cleaned_data['email']
             user.username = form.cleaned_data['username']
             user.save()
-            return redirect('profile',username=user.username)
+            return redirect('profile', username=user.username)
 
 
 class AddAddressView(LoginRequiredMixin, View):
@@ -395,7 +398,7 @@ class AddAddressView(LoginRequiredMixin, View):
     - shop/add_address.html
     """
 
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request):
         form = AddressForm()
@@ -416,7 +419,12 @@ class AddAddressView(LoginRequiredMixin, View):
                 street=form.cleaned_data['street'],
             )
             address.save()
-        return redirect('profile', username=user.username)
+            return redirect('profile', username=user.username)
+        else:
+            ctx = {
+                "form": form,
+            }
+            return render(request, 'shop/add_address.html', ctx)
 
 
 class AddToCartView(LoginRequiredMixin, View):
@@ -451,7 +459,7 @@ class AddToCartView(LoginRequiredMixin, View):
     - This view does not directly render a template but redirects to the user's cart page.
     """
 
-    login_url = '/login'
+    login_url = '/login/'
 
     def post(self, request):
         product_id = request.POST['product_id']
@@ -501,7 +509,7 @@ class CartView(LoginRequiredMixin, View):
     - shop/cart_view.html
     """
 
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request):
         cart = get_object_or_404(ShoppingCart, user=request.user, active=True)

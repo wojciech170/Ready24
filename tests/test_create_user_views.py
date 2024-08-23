@@ -29,7 +29,6 @@ def test_create_user_view_post_valid(client):
 
 @pytest.mark.django_db
 def test_create_user_view_post_invalid(client):
-    # Mismatching passwords
     url = reverse('register')
     data = {
         'username': 'newuser',
