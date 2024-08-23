@@ -1,7 +1,3 @@
-from unicodedata import decimal
-from venv import create
-
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -79,7 +75,6 @@ class SearchView(View):
                 ctx = {
                     'form': form,
                     'products': products,
-                    # 'categories': categories,
                 }
                 return render(request, "shop/search.html", ctx)
             except Product.DoesNotExist:
@@ -209,7 +204,7 @@ class LoginView(View):
 
             if user:
                 login(request, user)
-                return redirect('/')
+                return redirect('login')
 
             return render(request, 'shop/login.html', {'form': form})
 
@@ -232,7 +227,7 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
-        return redirect('/')
+        return redirect('login')
 
 
 class CreateUserView(View):
@@ -280,7 +275,7 @@ class CreateUserView(View):
                 first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name'],
             )
-            return redirect('/login/')
+            return redirect('login')
         else:
             return render(request, 'shop/create_user.html', {'form': form})
 
@@ -352,7 +347,7 @@ class EditProfileView(LoginRequiredMixin, View):
             user.email = form.cleaned_data['email']
             user.username = form.cleaned_data['username']
             user.save()
-            return redirect(f'/profile/{user.username}')
+            return redirect('profile',username=user.username)
 
 
 class AddAddressView(LoginRequiredMixin, View):
@@ -421,7 +416,7 @@ class AddAddressView(LoginRequiredMixin, View):
                 street=form.cleaned_data['street'],
             )
             address.save()
-        return redirect(f'/profile/{user.username}')
+        return redirect('profile', username=user.username)
 
 
 class AddToCartView(LoginRequiredMixin, View):
@@ -469,7 +464,7 @@ class AddToCartView(LoginRequiredMixin, View):
             cart_item.quantity += 1
             cart_item.save()
 
-        return redirect(f'/profile/{request.user.username}/cart')
+        return redirect('cart', username=request.user.username)
 
 
 class CartView(LoginRequiredMixin, View):
@@ -523,24 +518,70 @@ class CartView(LoginRequiredMixin, View):
         return render(request, 'shop/cart_view.html', ctx)
 
 
-class CheckoutAddAddressView (LoginRequiredMixin, View):
+class CheckoutView(LoginRequiredMixin, View):
+    """
+    Handles the checkout process for a user, including selecting an address and reviewing the cart.
+
+    Inherits:
+    ----------
+    - LoginRequiredMixin: Ensures that the user is authenticated before accessing this view.
+
+    Attributes:
+    ----------
+    - login_url (str): The URL to redirect to if the user is not authenticated.
+
+    Methods:
+    --------
+    GET:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object.
+        - Functionality:
+            - Retrieves the list of addresses associated with the current user.
+            - Retrieves the active `ShoppingCart` object for the current user.
+            - Fetches all `ShoppingCartProduct` objects linked to the user's active cart.
+            - Prepares the context (`ctx`) with:
+                - The user's addresses.
+                - The list of products (`ShoppingCartProduct`) in the cart.
+            - Renders the `shop/checkout.html` template with the prepared context.
+        - Error Handling:
+            - If no active shopping cart exists for the user, raises a `Http404` error.
+
+    POST:
+        - Parameters:
+            - request (HttpRequest): The incoming HTTP request object containing the form data.
+        - Functionality:
+            - Retrieves the selected address using the `address_id` from the POST data.
+            - Retrieves the active `ShoppingCart` object for the current user.
+            - Fetches all `ShoppingCartProduct` objects linked to the user's active cart.
+            - Calculates the total price of all products in the cart, considering their quantity.
+            - Prepares the context (`ctx`) with:
+                - The list of products (`ShoppingCartProduct`) in the cart.
+                - The total price of all items in the cart, rounded to two decimal places.
+                - The selected address for delivery.
+            - Renders the `shop/checkout.html` template with the prepared context.
+        - Error Handling:
+            - If the selected address or active shopping cart does not exist, raises a `Http404` error.
+
+    Template:
+    ---------
+    - shop/checkout.html
+    """
 
     login_url = '/login'
 
     def get(self, request):
         addresses = Address.objects.filter(user=request.user)
+        cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
 
         ctx = {
             "addresses": addresses,
+            "cart_products": cart_products,
         }
-        return render(request, 'shop/checkout_add_address.html', ctx)
+        return render(request, 'shop/checkout.html', ctx)
 
-
-class CheckoutSummaryView (LoginRequiredMixin, View):
-    login_url = '/login'
-
-    def get(self, request):
-        address_id = request.POST.get('address')
+    def post(self, request):
+        address_id = request.POST.get('address_id')
         address = Address.objects.get(pk=address_id)
         cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
         cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
@@ -554,4 +595,4 @@ class CheckoutSummaryView (LoginRequiredMixin, View):
             "address": address,
         }
 
-        return render(request,'shop/checkout_summary.html', ctx)
+        return render(request, 'shop/checkout.html', ctx)
