@@ -172,6 +172,17 @@ footer {
     text-align: center;
 }
 
+.tool-container {
+    display: flex;
+    flex-wrap: wrap; /* Pozwoli narzędziom zawijać się do kolejnego wiersza, jeśli się nie mieszczą */
+}
+
+.tool-container label {
+    margin-right: 10px; /* Przestrzeń między elementami */
+    margin-bottom: 10px; /* Przestrzeń między wierszami */
+}
+
+
 /*.centered {*/
 /*    display: flex;*/
 /*    align-self: center;*/

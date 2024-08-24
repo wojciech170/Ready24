@@ -3,19 +3,21 @@
 {% block content %}
     <h1>{{ category.name }}</h1>
     <p>{{ category.description }}</p>
-
+    {% if tools %}
     <form method="get">
         <h3>Filter by Tools</h3>
-        {% for tool in tools %}
-            <label>
-                <input type="checkbox" name="tools" value="{{ tool.id }}"
-                       {% if tool.id in selected_tools %}checked{% endif %}>
-                {{ tool.name }}
-            </label><br>
-        {% endfor %}
+        <div class="tool-container">
+            {% for tool in tools %}
+                <label>
+                    <input type="checkbox" name="tools" value="{{ tool.id }}"
+                           {% if tool.id in selected_tools %}checked{% endif %}>
+                    {{ tool.name }}
+                </label><br>
+            {% endfor %}
+        </div>
         <button type="submit">Filter</button>
     </form>
-
+    {% endif %}
     <div class="products">
         {% for prod in products %}
             <a href="{% url 'product' slug=prod.slug %}">
