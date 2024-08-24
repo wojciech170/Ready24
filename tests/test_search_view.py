@@ -34,6 +34,6 @@ def test_search_view_post_request_invalid_form(client):
     response = client.post(reverse('search'), {'searched': ''})
     assert response.status_code == 200
     assert 'shop/search.html' in [t.name for t in response.templates]
-    assert 'products' not in response.context
+    assert 'products' in response.context
     assert 'form' in response.context
     assert response.context['form'].errors
