@@ -512,7 +512,7 @@ class CartView(LoginRequiredMixin, View):
     login_url = '/login/'
 
     def get(self, request):
-        cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        cart, created = ShoppingCart.objects.get_or_create(user=request.user, active=True)
         cart_products = ShoppingCartProduct.objects.filter(shopping_cart=cart)
         total = 0
         for cart_item in cart_products:
@@ -604,3 +604,11 @@ class CheckoutView(LoginRequiredMixin, View):
         }
 
         return render(request, 'shop/checkout.html', ctx)
+
+
+class PaymentView(LoginRequiredMixin, View):
+    def post(self, request):
+        cart = get_object_or_404(ShoppingCart, user=request.user, active=True)
+        cart.active = False
+        cart.save()
+        return render(request, 'shop/payment.html')

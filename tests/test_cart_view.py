@@ -17,11 +17,12 @@ def test_cart_view_displays_cart(client, user, cart, cart_product):
 
 
 @pytest.mark.django_db
-def test_cart_view_no_cart_raises_404(client, user):
+def test_cart_view_no_cart_create_new_cart(client, user):
     client.force_login(user)
 
     response = client.get(reverse('cart'))
-    assert response.status_code == 404
+    assert response.status_code == 200
+
 
 
 @pytest.mark.django_db

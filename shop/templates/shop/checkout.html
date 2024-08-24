@@ -31,14 +31,14 @@
                 </tbody>
             </table>
         </div>
-        <div>
+        <div align="center">
             <h2>Chosen address:</h2><br>
             <div> {{ address.street }} </div>
             <div> {{ address.city }} </div>
             <div> {{ address.zipcode }} </div>
-        </div>
-        <div>
-            <form method="post" action="#">
+        </div><br>
+        <div align="center">
+            <form method="post" action="{% url 'payment' %}">
                 {% csrf_token %}
                 <button type="submit">Proceed to Payment</button>
             </form>

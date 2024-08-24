@@ -31,6 +31,7 @@ from shop.views import (
     AddToCartView,
     CartView,
     CheckoutView,
+    PaymentView
 )
 
 urlpatterns = [
@@ -47,6 +48,7 @@ urlpatterns = [
     path('profile/addtocart/', AddToCartView.as_view(), name='add_to_cart'),
     path('profile/cart/', CartView.as_view(), name='cart'),
     path('profile/checkout/', CheckoutView.as_view(), name='checkout'),
+    path('profile/payment/', PaymentView.as_view(), name='payment'),
 ]
 
 if settings.DEBUG:
